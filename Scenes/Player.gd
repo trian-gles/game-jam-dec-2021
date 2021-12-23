@@ -5,6 +5,7 @@ export var acceleration = 5
 export var gravity = 0.8
 export var jump_power = 30
 export var mouse_sensitivity = 0.1
+var last_checkpoint = null
 
 var camera_x_rotation = 0
 
@@ -57,4 +58,18 @@ func _physics_process(delta):
 	velocity = velocity.linear_interpolate(direction * speed, acceleration * delta)
 	velocity.y -= gravity
 	velocity = move_and_slide(velocity, Vector3.UP)
+	
+	if transform.origin.y < -20:
+		die()
+	
+func die():
+	print("YOU DED")
+	if last_checkpoint:
+		print(last_checkpoint.name)
+		transform.origin = last_checkpoint.respawn_point
+	
+func save_checkpoint(checkpoint):
+	if checkpoint != last_checkpoint:
+		last_checkpoint = checkpoint
+		print("Saving checkpoint")
 	
