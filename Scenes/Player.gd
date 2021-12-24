@@ -6,6 +6,7 @@ export var gravity = 0.8
 export var jump_power = 30
 export var mouse_sensitivity = 0.1
 var last_checkpoint = null
+export var friction = 0.5
 
 var camera_x_rotation = 0
 
@@ -34,6 +35,8 @@ func _process(delta):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _physics_process(delta):
+	var movement = false
+	
 	var head_basis = head.global_transform.basis
 	
 	var direction = Vector3()
@@ -42,13 +45,17 @@ func _physics_process(delta):
 	
 	if Input.is_action_pressed("move_forward"):
 		direction -= head_basis.z
+		movement = true
 	elif Input.is_action_pressed("move_back"):
 		direction += head_basis.z
+		movement = true
 	
 	if Input.is_action_pressed("move_left"):
 		direction -= head_basis.x
+		movement = true
 	elif Input.is_action_pressed("move_right"):
 		direction += head_basis.x
+		movement = true
 	
 	if Input.is_action_pressed("jump") and is_on_floor():
 		velocity.y += jump_power
@@ -56,8 +63,11 @@ func _physics_process(delta):
 	direction = direction.normalized()
 	
 	velocity = velocity.linear_interpolate(direction * speed, acceleration * delta)
-	velocity.y -= gravity
-	velocity = move_and_slide(velocity, Vector3.UP)
+	if not is_on_floor():
+		velocity.y -= gravity
+	
+	
+	velocity = move_and_slide(velocity, Vector3.UP, true)
 	
 	if transform.origin.y < -20:
 		die()
