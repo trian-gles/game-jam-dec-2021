@@ -26,3 +26,6 @@ material/0 = null
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.712469, 0 )
 
 [node name="Camera" type="Camera" parent="Head"]
+
+[node name="ThrowPosition" type="Position3D" parent="Head"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.25085 )

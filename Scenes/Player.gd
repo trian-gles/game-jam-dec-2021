@@ -12,8 +12,11 @@ var camera_x_rotation = 0
 
 var velocity = Vector3()
 
+var teleport = preload("res://Scenes/Teleport.tscn")
+
 onready var head = $Head
 onready var camera = $Head/Camera
+onready var throw_position = $Head/ThrowPosition
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -33,6 +36,13 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed("left_click"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	if Input.is_action_just_pressed("right_click"):
+		var new_teleport = teleport.instance()
+		owner.add_child(new_teleport)
+		new_teleport.global_transform.origin = throw_position.global_transform.origin
+		
+		
 
 func _physics_process(delta):
 	var movement = false
@@ -44,6 +54,7 @@ func _physics_process(delta):
 	
 	
 	if Input.is_action_pressed("move_forward"):
+		print(head_basis)
 		direction -= head_basis.z
 		movement = true
 	elif Input.is_action_pressed("move_back"):
@@ -69,7 +80,7 @@ func _physics_process(delta):
 	
 	velocity = move_and_slide(velocity, Vector3.UP, true)
 	
-	if transform.origin.y < -20:
+	if transform.origin.y < -40:
 		die()
 	
 func die():
