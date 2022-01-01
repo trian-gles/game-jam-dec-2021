@@ -1,4 +1,7 @@
 extends RigidBody
+class_name Teleport
+
+signal teleport_collided(pos)
 
 
 # Declare member variables here. Examples:
@@ -11,10 +14,8 @@ func _ready():
 	pass # Replace with function body.
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
 
 func _on_Teleport_body_entered(body):
 	print("Teleport collided with something")
+	emit_signal("teleport_collided", transform.origin)
+	queue_free()

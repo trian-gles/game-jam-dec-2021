@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "RigidBody",
+"class": "Teleport",
+"language": "GDScript",
+"path": "res://Scenes/Teleport.gd"
+} ]
+_global_script_class_icons={
+"Teleport": ""
+}
+
 [application]
 
 config/name="fps-test"

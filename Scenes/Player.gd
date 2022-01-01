@@ -4,6 +4,7 @@ export var speed = 10
 export var acceleration = 5
 export var gravity = 0.8
 export var jump_power = 30
+export var throw_force = 20
 export var mouse_sensitivity = 0.1
 var last_checkpoint = null
 export var friction = 0.5
@@ -12,7 +13,7 @@ var camera_x_rotation = 0
 
 var velocity = Vector3()
 
-var teleport = preload("res://Scenes/Teleport.tscn")
+const Teleport = preload("res://Scenes/Teleport.tscn")
 
 onready var head = $Head
 onready var camera = $Head/Camera
@@ -38,9 +39,7 @@ func _process(delta):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	if Input.is_action_just_pressed("right_click"):
-		var new_teleport = teleport.instance()
-		owner.add_child(new_teleport)
-		new_teleport.global_transform.origin = throw_position.global_transform.origin
+		throw_teleport()
 		
 		
 
@@ -54,7 +53,6 @@ func _physics_process(delta):
 	
 	
 	if Input.is_action_pressed("move_forward"):
-		print(head_basis)
 		direction -= head_basis.z
 		movement = true
 	elif Input.is_action_pressed("move_back"):
@@ -82,6 +80,17 @@ func _physics_process(delta):
 	
 	if transform.origin.y < -40:
 		die()
+		
+func throw_teleport():
+	var new_teleport: Teleport = Teleport.instance()
+	owner.add_child(new_teleport)
+	new_teleport.global_transform.origin = throw_position.global_transform.origin
+	var head_basis = head.global_transform.basis
+	new_teleport.connect("teleport_collided", self, "on_teleport_collision")
+	new_teleport.add_force(-head_basis.z * throw_force, new_teleport.global_transform.origin)
+		
+func on_teleport_collision(pos: Vector3):
+	transform.origin = pos
 	
 func die():
 	print("YOU DED")
