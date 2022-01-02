@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=1]
 [ext_resource path="res://Materials/Teleport.tres" type="Material" id=2]
 [ext_resource path="res://Scripts/AudioStreamPlayer.gd" type="Script" id=3]
 [ext_resource path="res://Sounds/white_noise.ogg" type="AudioStream" id=4]
+[ext_resource path="res://Scenes/RayCasts.gd" type="Script" id=5]
 
 [sub_resource type="CapsuleShape" id=1]
 radius = 0.75
@@ -58,3 +59,22 @@ material/0 = ExtResource( 2 )
 stream = ExtResource( 4 )
 volume_db = -10.924
 script = ExtResource( 3 )
+
+[node name="RayCasts" type="Spatial" parent="."]
+script = ExtResource( 5 )
+
+[node name="ForRay" type="RayCast" parent="RayCasts"]
+enabled = true
+cast_to = Vector3( 0, 0, -1 )
+
+[node name="BackRay" type="RayCast" parent="RayCasts"]
+enabled = true
+cast_to = Vector3( 0, 0, 1 )
+
+[node name="RightRay" type="RayCast" parent="RayCasts"]
+enabled = true
+cast_to = Vector3( 1, 0, 0 )
+
+[node name="LeftRay" type="RayCast" parent="RayCasts"]
+enabled = true
+cast_to = Vector3( -1, 0, 0 )
