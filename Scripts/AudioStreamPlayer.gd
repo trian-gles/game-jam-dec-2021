@@ -3,6 +3,7 @@ extends AudioStreamPlayer
 var white_noise = preload("res://Sounds/white_noise.ogg")
 var arrive = preload("res://Sounds/arrive.ogg")
 var jump = preload("res://Sounds/jump.ogg")
+var land = preload("res://Sounds/landing.ogg")
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -29,3 +30,7 @@ func play_jump():
 	stream = jump
 	play()
 	
+func play_land():
+	volume_db = 0
+	stream = land
+	play()

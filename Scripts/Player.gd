@@ -107,8 +107,14 @@ func _physics_process(delta):
 	direction = direction.normalized()
 	
 	velocity = velocity.linear_interpolate(direction * speed, acceleration * delta)
+	
 	if not is_on_floor():
+		print("in air")
 		velocity.y -= gravity
+		
+	else:
+		print("on floor")
+	
 	
 	
 	velocity = move_and_slide(velocity, Vector3.UP, true)
@@ -135,9 +141,11 @@ func jump():
 func start_charging():
 	throw_charging = true
 	throw_cursor.visible = true
+	$AudioGrowing.play()
 	
 		
 func throw_teleport():
+	$AudioGrowing.stop()
 	var new_teleport = teleport.instance()
 	owner.add_child(new_teleport)
 	new_teleport.global_transform.origin = throw_position.global_transform.origin
