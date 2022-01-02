@@ -171,10 +171,12 @@ func die():
 		
 	var new_color = Color(255, 0, 0, 0)
 	death_vision.get_active_material(0).set_albedo(new_color)
+	$AudioSpawn.play()
 	
 func save_checkpoint(checkpoint):
 	if checkpoint != last_checkpoint:
 		last_checkpoint = checkpoint
+		$AudioSpawn.play()
 		print("Saving checkpoint")
 		
 	
