@@ -1,16 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Scripts/Teleport.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/TrailRenderer.gd" type="Script" id=2]
-
-[sub_resource type="SpatialMaterial" id=2]
-albedo_color = Color( 0.945098, 1, 0, 1 )
-metallic = 1.0
-metallic_specular = 0.9
-roughness = 0.0
+[ext_resource path="res://Materials/Teleport.tres" type="Material" id=3]
 
 [sub_resource type="SphereMesh" id=1]
-material = SubResource( 2 )
+material = ExtResource( 3 )
 radius = 0.1
 height = 0.2
 
@@ -19,9 +14,6 @@ points = PoolVector3Array( -0.0182264, -0.0978172, 0.0092536, 0.0184367, 0.09777
 
 [sub_resource type="Curve" id=4]
 _data = [ Vector2( 0.474537, 1 ), 0.0, 0.0, 0, 0 ]
-
-[sub_resource type="SpatialMaterial" id=5]
-albedo_color = Color( 1, 0.92549, 0, 0.384314 )
 
 [node name="Teleport" type="RigidBody"]
 contacts_reported = 1
@@ -38,6 +30,6 @@ shape = SubResource( 3 )
 [node name="TrailRenderer" type="Spatial" parent="."]
 script = ExtResource( 2 )
 width_curve = SubResource( 4 )
-material = SubResource( 5 )
+material = ExtResource( 3 )
 
 [connection signal="body_entered" from="." to="." method="_on_Teleport_body_entered"]

@@ -13,11 +13,15 @@ var camera_x_rotation = 0
 
 var velocity = Vector3()
 
-const Teleport = preload("res://Scenes/Teleport.tscn")
+var throw_charging = false
+var throw_mult = 1
+
+const teleport = preload("res://Scenes/Teleport.tscn")
 
 onready var head = $Head
 onready var camera = $Head/Camera
-onready var throw_position = $Head/ThrowPosition
+onready var throw_position = $Head/Camera/ThrowPosition
+onready var throw_cursor = $Head/Camera/ThrowPosition/ThrowCursor
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -37,9 +41,18 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed("left_click"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	
+		
 	if Input.is_action_just_pressed("right_click"):
+		start_charging()
+	
+	if Input.is_action_just_released("right_click"):
 		throw_teleport()
+		
+	if throw_charging:
+		throw_mult += 0.3 * delta
+		var curs_scale = throw_mult / 10
+		throw_cursor.scale = Vector3(curs_scale, curs_scale, curs_scale)
+		print(throw_mult)
 		
 		
 
@@ -80,14 +93,24 @@ func _physics_process(delta):
 	
 	if transform.origin.y < -40:
 		die()
+
+func start_charging():
+	throw_charging = true
+	throw_cursor.visible = true
+	
 		
 func throw_teleport():
-	var new_teleport: Teleport = Teleport.instance()
+	var new_teleport = teleport.instance()
 	owner.add_child(new_teleport)
 	new_teleport.global_transform.origin = throw_position.global_transform.origin
-	var head_basis = head.global_transform.basis
+	var direction: Vector3 = throw_position.global_transform.origin - head.global_transform.origin
+	direction = direction.normalized()
 	new_teleport.connect("teleport_collided", self, "on_teleport_collision")
-	new_teleport.add_force(-head_basis.z * throw_force, new_teleport.global_transform.origin)
+	new_teleport.add_force(direction * throw_force * throw_mult + velocity, new_teleport.global_transform.origin)
+	throw_mult = 1
+	throw_charging = false
+	throw_cursor.visible = false
+	throw_cursor.scale = Vector3(0.1, 0.1, 0.1)
 		
 func on_teleport_collision(pos: Vector3):
 	transform.origin = pos
@@ -102,4 +125,5 @@ func save_checkpoint(checkpoint):
 	if checkpoint != last_checkpoint:
 		last_checkpoint = checkpoint
 		print("Saving checkpoint")
+		
 	

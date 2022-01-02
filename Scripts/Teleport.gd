@@ -17,5 +17,7 @@ func _ready():
 
 func _on_Teleport_body_entered(body):
 	print("Teleport collided with something")
+	if body.name == "Player":
+		return
 	emit_signal("teleport_collided", transform.origin)
 	queue_free()
