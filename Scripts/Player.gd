@@ -148,6 +148,7 @@ func throw_teleport():
 		
 func on_teleport_collision(pos: Vector3):
 	transform.origin = pos
+	audio.play_arrive()
 	
 func die():
 	print("YOU DED")
