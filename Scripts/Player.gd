@@ -16,12 +16,16 @@ var velocity = Vector3()
 var throw_charging = false
 var throw_mult = 1
 
+var is_dying = false
+
 const teleport = preload("res://Scenes/Teleport.tscn")
 
 onready var head = $Head
 onready var camera = $Head/Camera
 onready var throw_position = $Head/Camera/ThrowPosition
 onready var throw_cursor = $Head/Camera/ThrowPosition/ThrowCursor
+onready var death_vision = $Head/Camera/DeathVision
+onready var audio = $AudioStreamPlayer
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -91,8 +95,20 @@ func _physics_process(delta):
 	
 	velocity = move_and_slide(velocity, Vector3.UP, true)
 	
-	if transform.origin.y < -40:
+	
+	## HANDLE DYING
+	if transform.origin.y < -90:
 		die()
+	if transform.origin.y < -50:
+		if not is_dying:
+			is_dying = true
+			audio.play_white_noise()
+		var new_color = Color(255, 0, 0, (255 + (transform.origin.y + 50)) * 2 )
+		death_vision.get_active_material(0).set_albedo(new_color)
+	else:
+		if is_dying:
+			is_dying = false
+			audio.stop()	
 
 func start_charging():
 	throw_charging = true
@@ -117,9 +133,13 @@ func on_teleport_collision(pos: Vector3):
 	
 func die():
 	print("YOU DED")
+	audio.stop()
 	if last_checkpoint:
 		print(last_checkpoint.name)
 		transform.origin = last_checkpoint.respawn_point
+		
+	var new_color = Color(255, 0, 0, 0)
+	death_vision.get_active_material(0).set_albedo(new_color)
 	
 func save_checkpoint(checkpoint):
 	if checkpoint != last_checkpoint:
