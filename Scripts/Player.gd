@@ -93,22 +93,28 @@ func _physics_process(delta):
 	
 	if Input.is_action_just_pressed("jump"):
 		if is_on_floor():
-			velocity.y += jump_power
+			jump()
 		elif raycasts.check_colliding():
 			var ray: RayCast = raycasts.colliding_ray
 			velocity += -ray.cast_to * 30
-			velocity.y += jump_power
+			jump()
 			print("Walljump")
 		
 		elif can_double_jump:
-			velocity.y += jump_power
+			jump()
 			can_double_jump = false
 		
 	direction = direction.normalized()
 	
 	velocity = velocity.linear_interpolate(direction * speed, acceleration * delta)
+	
 	if not is_on_floor():
+		print("in air")
 		velocity.y -= gravity
+		
+	else:
+		print("on floor")
+	
 	
 	
 	velocity = move_and_slide(velocity, Vector3.UP, true)
@@ -127,13 +133,19 @@ func _physics_process(delta):
 		if is_dying:
 			is_dying = false
 			audio.stop()	
+			
+func jump():
+	velocity.y += jump_power
+	audio.play_jump()
 
 func start_charging():
 	throw_charging = true
 	throw_cursor.visible = true
+	$AudioGrowing.play()
 	
 		
 func throw_teleport():
+	$AudioGrowing.stop()
 	var new_teleport = teleport.instance()
 	owner.add_child(new_teleport)
 	new_teleport.global_transform.origin = throw_position.global_transform.origin
@@ -148,6 +160,7 @@ func throw_teleport():
 		
 func on_teleport_collision(pos: Vector3):
 	transform.origin = pos
+	audio.play_arrive()
 	
 func die():
 	print("YOU DED")
@@ -158,10 +171,12 @@ func die():
 		
 	var new_color = Color(255, 0, 0, 0)
 	death_vision.get_active_material(0).set_albedo(new_color)
+	$AudioSpawn.play()
 	
 func save_checkpoint(checkpoint):
 	if checkpoint != last_checkpoint:
 		last_checkpoint = checkpoint
+		$AudioSpawn.play()
 		print("Saving checkpoint")
 		
 	
