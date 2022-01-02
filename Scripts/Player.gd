@@ -18,6 +18,8 @@ var throw_mult = 1
 
 var is_dying = false
 
+var can_double_jump = false
+
 const teleport = preload("res://Scenes/Teleport.tscn")
 
 onready var head = $Head
@@ -26,6 +28,7 @@ onready var throw_position = $Head/Camera/ThrowPosition
 onready var throw_cursor = $Head/Camera/ThrowPosition/ThrowCursor
 onready var death_vision = $Head/Camera/DeathVision
 onready var audio = $AudioStreamPlayer
+onready var raycasts = $RayCasts
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -83,8 +86,23 @@ func _physics_process(delta):
 		direction += head_basis.x
 		movement = true
 	
-	if Input.is_action_pressed("jump") and is_on_floor():
-		velocity.y += jump_power
+	
+	### JUMP HANDLING
+	if not can_double_jump and is_on_floor():
+		can_double_jump = true
+	
+	if Input.is_action_just_pressed("jump"):
+		if is_on_floor():
+			velocity.y += jump_power
+		elif raycasts.check_colliding():
+			var ray: RayCast = raycasts.colliding_ray
+			velocity += -ray.cast_to * 30
+			velocity.y += jump_power
+			print("Walljump")
+		
+		elif can_double_jump:
+			velocity.y += jump_power
+			can_double_jump = false
 		
 	direction = direction.normalized()
 	
