@@ -2,6 +2,7 @@ extends AudioStreamPlayer
 
 var white_noise = preload("res://Sounds/white_noise.ogg")
 var arrive = preload("res://Sounds/arrive.ogg")
+var jump = preload("res://Sounds/jump.ogg")
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -21,5 +22,10 @@ func play_white_noise():
 func play_arrive():
 	volume_db = 0
 	stream = arrive
+	play()
+	
+func play_jump():
+	volume_db = 0
+	stream = jump
 	play()
 	

@@ -93,15 +93,15 @@ func _physics_process(delta):
 	
 	if Input.is_action_just_pressed("jump"):
 		if is_on_floor():
-			velocity.y += jump_power
+			jump()
 		elif raycasts.check_colliding():
 			var ray: RayCast = raycasts.colliding_ray
 			velocity += -ray.cast_to * 30
-			velocity.y += jump_power
+			jump()
 			print("Walljump")
 		
 		elif can_double_jump:
-			velocity.y += jump_power
+			jump()
 			can_double_jump = false
 		
 	direction = direction.normalized()
@@ -127,6 +127,10 @@ func _physics_process(delta):
 		if is_dying:
 			is_dying = false
 			audio.stop()	
+			
+func jump():
+	velocity.y += jump_power
+	audio.play_jump()
 
 func start_charging():
 	throw_charging = true
