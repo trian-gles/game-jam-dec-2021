@@ -56,4 +56,5 @@ material/0 = ExtResource( 2 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 4 )
+volume_db = -10.924
 script = ExtResource( 3 )
